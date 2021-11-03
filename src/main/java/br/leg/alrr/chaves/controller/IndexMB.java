@@ -95,7 +95,7 @@ public class IndexMB implements Serializable {
     private void iniciar() {
         chaves = new ArrayList<>();
 
-        if (FacesUtils.getURL().contains("index")) {
+        if (!FacesUtils.getURL().contains("itinerario")) {
             listarChaves();
             listarUltimosRegistros();
         }

@@ -24,7 +24,7 @@
                             <div class="p-col-8 p-md-8 p-col-12">
                                 <p:message for="idServidorRetirada" showSummary="true" showDetail="false" style="width: 100%; margin-bottom: 10px;"/>
                                 <span class="ui-float-label">
-                                    <p:inputText id="idServidorRetirada" value="#{indexMB.itinerario.servidorRetiradaChave}" disabled="#{indexMB.itinerario.id != null}" required="true" requiredMessage="Campo obrigatório!"/>
+                                    <p:inputText id="idServidorRetirada" value="#{indexMB.itinerario.responsavelRetiradaChave}" disabled="#{indexMB.itinerario.id != null}" required="true" requiredMessage="Campo obrigatório!"/>
                                     <label>Digite o nome do responsável pela retirada da chave</label>
                                 </span>
                             </div>
@@ -36,7 +36,7 @@
                             <div class="p-col-8 p-md-8 p-col-12">
                                 <p:message for="idServidorDevolucao" showSummary="true" showDetail="false" style="width: 100%; margin-bottom: 10px;"/>
                                 <span class="ui-float-label">
-                                    <p:inputText id="idServidorDevolucao" value="#{indexMB.itinerario.servidorDevolucaoChave}" disabled="#{indexMB.itinerario.id == null}" required="true" requiredMessage="Campo obrigatório!"/>
+                                    <p:inputText id="idServidorDevolucao" value="#{indexMB.itinerario.responsavelDevolucaoChave}" disabled="#{indexMB.itinerario.id == null}" required="true" requiredMessage="Campo obrigatório!"/>
                                     <label>Digite o nome do responsável pela devolução da chave</label>
                                 </span>
                             </div>
