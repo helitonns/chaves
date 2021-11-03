@@ -1,0 +1,128 @@
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="../../WEB-INF/template.xhtml">
+
+    <ui:define name="content">
+        <h:form id="form">
+
+
+            <div class="p-grid">
+                <div class="p-col-12">
+                    <label class="overview-numbers" style="color: #fff;font-size: 30px">Chave</label>
+                    <div class="card card-w-title" style="margin-top: 5px">
+
+                        <p:messages globalOnly="true" closable="true"/>
+                        <div class="subtitulo" style="margin-left: 20px; font-size: 20px">Gerenciar chaves</div>
+
+                        <div class="p-grid ui-fluid form-group" style="margin-top: 10px">
+
+                            <div class="p-col-4 p-md-4 p-col-12">
+                                <p:message for="idCategoria" showSummary="true" showDetail="false" style="width: 100%; margin-bottom: 10px;"/>
+                                <p:selectOneMenu id="idCategoria" value="#{chaveMB.categoriaChave}" converter="entityConverter" required="true" requiredMessage="Campo obrigatório!">
+                                    <f:selectItem itemLabel="Selecione a categoria:" noSelectionOption="true" />
+                                    <f:selectItems value="#{chaveMB.categorias}" var="categorias_var" itemLabel="#{categorias_var.nome}" itemValue="#{categorias_var}" />
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="p-col-4 p-md-4 p-col-12">
+                                <p:message for="idNumero" showSummary="true" showDetail="false" style="width: 100%; margin-bottom: 10px;"/>
+                                <span class="ui-float-label">
+                                    <p:inputText id="idNumero" value="#{chaveMB.chave.numero}"  required="true" requiredMessage="Campo obrigatório!"/>
+                                    <label>Digite o número da chave</label>
+                                </span>
+                            </div>
+                            <div class="p-col-4 p-md-4 p-col-12">
+                                <p:message for="idSala" showSummary="true" showDetail="false" style="width: 100%; margin-bottom: 10px;"/>
+                                <span class="ui-float-label">
+                                    <p:inputText id="idSala" value="#{chaveMB.chave.sala}" converter="upper" required="true" requiredMessage="Campo obrigatório!"/>
+                                    <label>Digite a sala da chave</label>
+                                </span>
+                            </div>
+
+                            <div class="p-col-6 p-md-6 p-col-12">
+                                <p:commandButton value="Salvar" action="#{chaveMB.salvar()}" ajax="false" icon="pi pi-save"/>
+                            </div>
+                            <div class="p-col-6 p-md-6 p-col-12">
+                                <p:commandButton value="Cancelar" action="#{chaveMB.cancelar()}" styleClass="blue-grey-btn" icon="pi pi-times" immediate="true"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </h:form>
+
+        <h:form id="form2">
+            <div class="p-grid">
+                <div class="p-col-12">
+                    <div class="card card-w-title">
+                        <div class="subtitulo" style="margin-left: 20px; font-size: 20px">Chaves cadastradas</div>
+
+                        <div class="p-grid ui-fluid form-group" style="margin-top: 20px">
+
+                            <div class="p-col-12">
+                                <p:dataTable var="chave_var" value="#{chaveMB.chaves}"
+                                             showGridlines="true" 
+                                             reflow="true" 
+                                             rowKey="#{chave_var.id}" 
+                                             paginator="true"
+                                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                             currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registros"
+                                             rows="10" 
+                                             emptyMessage=" ">
+                                    <p:column headerText="Id" style="width: 70px;">
+                                        <h:outputText value="#{chave_var.id}" />
+                                    </p:column>
+
+                                    <p:column headerText="Categoria" sortBy="#{chave_var.categoria.nome}" >
+                                        <h:outputText value="#{chave_var.categoria.nome}" />
+                                    </p:column>
+                                    <p:column headerText="Número" sortBy="#{chave_var.numero}" >
+                                        <h:outputText value="#{chave_var.numero}" />
+                                    </p:column>
+                                    <p:column headerText="Sala" sortBy="#{chave_var.sala}" >
+                                        <h:outputText value="#{chave_var.sala}" />
+                                    </p:column>
+
+                                    <p:column headerText="Ação" style="max-width: 200px;">
+                                        <div style="display: flex; justify-content: space-between">
+                                            <p:commandButton value="Editar" icon="pi pi-pencil"  style="max-width: 100px;" ajax="false">
+                                                <f:setPropertyActionListener value="#{chave_var}" target="#{chaveMB.chave}"/>
+                                                <f:setPropertyActionListener value="#{chave_var.categoria}" target="#{chaveMB.categoriaChave}"/>
+                                            </p:commandButton>
+                                            <p:commandButton value="Excluir" icon="pi pi-trash"  style="max-width: 100px;" styleClass="ui-button-danger" actionListener="#{chaveMB.setChave(chave_var)}" onclick="PF('modal_excluir').show();">
+                                                <f:setPropertyActionListener value="#{chave_var}" target="#{chaveMB.chave}"/>
+                                            </p:commandButton>
+                                        </div>
+                                    </p:column>
+                                </p:dataTable>
+                            </div>
+                        </div>
+
+                        <p:dialog header="Exclusão" widgetVar="modal_excluir" modal="true" height="100" width="550">
+                            <h:panelGrid columns="2" style="width: 100%">
+                                <h:outputText value="Tem certeza que deseja excluir o item selecionado?" style="width: 100%"/>
+                                <p:selectOneButton value="#{chaveMB.removerChave}">
+                                    <f:selectItem itemLabel="Sim" itemValue="#{true}" />
+                                    <f:selectItem itemLabel="Não" itemValue="#{false}" />
+                                </p:selectOneButton>
+                            </h:panelGrid>
+
+                            <f:facet name="footer">
+                                <h:panelGrid columns="2" style="width: 100%">
+                                    <p:commandButton value="Excluir" icon="pi pi-trash" ajax="false" action="#{chaveMB.remover()}" style="width: 100%"/>
+                                    <p:button value="Cancelar" icon="pi pi-times" styleClass="blue-grey-btn"  style="width: 100%"/>
+                                </h:panelGrid>
+                            </f:facet>
+                        </p:dialog>
+
+                    </div>
+                </div>
+            </div>
+
+        </h:form>
+
+    </ui:define>
+</ui:composition>

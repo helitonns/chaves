@@ -1,0 +1,59 @@
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:stella="http://stella.caelum.com.br/faces2"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template1.xhtml">
+
+
+    <ui:define name="content">
+
+        <h:form id="form">
+
+            <div class="p-grid">
+                <div class="p-col-12">
+                    <div class="card card-w-title" style="margin-top: 5px">
+
+                        <p:messages globalOnly="true" closable="true"/>
+                        <div class="subtitulo" style="margin-left: 20px; font-size: 20px">Chave: #{indexMB.chave.categoria.nome} - #{indexMB.chave.numero} (#{indexMB.chave.sala})</div>
+
+                        <div class="p-grid ui-fluid form-group" style="margin-top: 10px">
+
+                            <div class="p-col-8 p-md-8 p-col-12">
+                                <p:message for="idServidorRetirada" showSummary="true" showDetail="false" style="width: 100%; margin-bottom: 10px;"/>
+                                <span class="ui-float-label">
+                                    <p:inputText id="idServidorRetirada" value="#{indexMB.itinerario.servidorRetiradaChave}" disabled="#{indexMB.itinerario.id != null}" required="true" requiredMessage="Campo obrigatório!"/>
+                                    <label>Digite o nome do responsável pela retirada da chave</label>
+                                </span>
+                            </div>
+
+                            <div class="p-col-4 p-md-4 p-col-12" style="margin-top: 40px">
+                                <p:commandButton value="Retirar chave" action="#{indexMB.movimentarChave()}" disabled="#{indexMB.itinerario.id != null}" ajax="false" icon="pi pi-arrow-right"/>
+                            </div>
+                            
+                            <div class="p-col-8 p-md-8 p-col-12">
+                                <p:message for="idServidorDevolucao" showSummary="true" showDetail="false" style="width: 100%; margin-bottom: 10px;"/>
+                                <span class="ui-float-label">
+                                    <p:inputText id="idServidorDevolucao" value="#{indexMB.itinerario.servidorDevolucaoChave}" disabled="#{indexMB.itinerario.id == null}" required="true" requiredMessage="Campo obrigatório!"/>
+                                    <label>Digite o nome do responsável pela devolução da chave</label>
+                                </span>
+                            </div>
+
+                            <div class="p-col-4 p-md-4 p-col-12" style="margin-top: 40px">
+                                <p:commandButton value="Devolver chave" action="#{indexMB.movimentarChave()}" disabled="#{indexMB.itinerario.id == null}" ajax="false" icon="pi pi-arrow-left"/>
+                            </div>
+                            
+                            <div class="p-lg-col-4 p-md-4 p-col-12 p-lg-offset-8 p-md-offset-8" style="margin-top: 40px;">
+                                <p:commandButton value="Voltar" action="#{indexMB.voltar()}" immediate="true" ajax="false" icon="pi pi-arrow-left"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </h:form>
+
+    </ui:define>
+</ui:composition>

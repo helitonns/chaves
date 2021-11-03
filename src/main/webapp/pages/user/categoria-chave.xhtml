@@ -1,0 +1,117 @@
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="../../WEB-INF/template.xhtml">
+
+    <ui:define name="content">
+        <h:form id="form">
+
+
+            <div class="p-grid">
+                <div class="p-col-12">
+                    <label class="overview-numbers" style="color: #fff;font-size: 30px">Categoria Chave</label>
+                    <div class="card card-w-title" style="margin-top: 5px">
+
+                        <p:messages globalOnly="true" closable="true"/>
+                        <div class="subtitulo" style="margin-left: 20px; font-size: 20px">Gerenciar categorias de chave</div>
+
+                        <div class="p-grid ui-fluid form-group" style="margin-top: 10px">
+                            <div class="p-col-3 p-md-3 p-col-12">
+                                <p:message for="idNome" showSummary="true" showDetail="false" style="width: 100%"/>
+                            </div>
+                            <div class="p-col-9 p-md-9 p-col-12"/>
+                            <div class="p-col-3 p-md-3 p-col-12">
+                                <span class="ui-float-label">
+                                    <p:inputText id="idNome" styleClass="ui-float-label" value="#{categoriaChaveMB.categoriaChave.nome}" converter="upper" required="true" requiredMessage="Campo obrigatório!"/>
+                                    <label>Digite o nome da categoria</label>
+                                </span>
+                            </div>
+                            <div class="p-col-3 p-md-3 p-col-12">
+                                <p:selectBooleanButton value="#{categoriaChaveMB.categoriaChave.status}" onLabel="Ativa" offLabel="Inativa" onIcon="pi pi-check" offIcon="pi pi-times" style="width: 100%"  />
+                            </div>
+                            <div class="p-col-3 p-md-3 p-col-12">
+                                <p:commandButton value="Salvar" action="#{categoriaChaveMB.salvar()}" ajax="false" icon="pi pi-save"/>
+                            </div>
+
+                            <div class="p-col-3 p-md-3 p-col-12">
+                                <p:commandButton value="Cancelar" action="#{categoriaChaveMB.cancelar()}" styleClass="blue-grey-btn" icon="pi pi-times" immediate="true"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </h:form>
+
+        <h:form id="form2">
+            <div class="p-grid">
+                <div class="p-col-12">
+                    <div class="card card-w-title">
+                        <div class="subtitulo" style="margin-left: 20px; font-size: 20px">Categorias cadastradas</div>
+
+                        <div class="p-grid ui-fluid form-group" style="margin-top: 20px">
+
+                            <div class="p-col-12">
+                                <p:dataTable var="categoria_var" value="#{categoriaChaveMB.categorias}"
+                                             showGridlines="true" 
+                                             reflow="true" 
+                                             rowKey="#{categoria_var.id}" 
+                                             paginator="true"
+                                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                             currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registros"
+                                             rows="10" 
+                                             emptyMessage=" ">
+                                    <p:column headerText="Id" style="width: 70px;">
+                                        <h:outputText value="#{categoria_var.id}" />
+                                    </p:column>
+
+                                    <p:column headerText="Nome" sortBy="#{categoria_var.nome}" >
+                                        <h:outputText value="#{categoria_var.nome}" />
+                                    </p:column>
+                                    
+                                    <p:column headerText="Status" >
+                                        <h:outputText value="Ativa" rendered="#{categoria_var.status}" />
+                                        <h:outputText value="Inativa" rendered="#{!categoria_var.status}" />
+                                    </p:column>
+
+                                    <p:column headerText="Ação" style="max-width:  200px;">
+                                        <div style="display: flex; justify-content: space-between">
+                                            <p:commandButton value="Editar" icon="pi pi-pencil"  style="max-width: 100px;" ajax="false">
+                                                <f:setPropertyActionListener value="#{categoria_var}" target="#{categoriaChaveMB.categoriaChave}"/>
+                                            </p:commandButton>
+                                            <p:commandButton value="Excluir" icon="pi pi-trash"  style="max-width: 100px;" styleClass="ui-button-danger" actionListener="#{categoriaChaveMB.setCategoriaChave(categoria_var)}" onclick="PF('modal_excluir_pais').show();">
+                                                <f:setPropertyActionListener value="#{categoria_var}" target="#{categoriaChaveMB.categoriaChave}"/>
+                                            </p:commandButton>
+                                        </div>
+                                    </p:column>
+                                </p:dataTable>
+                            </div>
+                        </div>
+
+                        <p:dialog header="Exclusão" widgetVar="modal_excluir_pais" modal="true" height="100" width="550">
+                            <h:panelGrid columns="2" style="width: 100%">
+                                <h:outputText value="Tem certeza que deseja excluir o item selecionado?" style="width: 100%"/>
+                                <p:selectOneButton value="#{categoriaChaveMB.removerCategoriaChave}">
+                                    <f:selectItem itemLabel="Sim" itemValue="#{true}" />
+                                    <f:selectItem itemLabel="Não" itemValue="#{false}" />
+                                </p:selectOneButton>
+                            </h:panelGrid>
+
+                            <f:facet name="footer">
+                                <h:panelGrid columns="2" style="width: 100%">
+                                    <p:commandButton value="Excluir" icon="pi pi-trash" ajax="false" action="#{categoriaChaveMB.remover()}" style="width: 100%"/>
+                                    <p:button value="Cancelar" icon="pi pi-times" styleClass="blue-grey-btn"  style="width: 100%"/>
+                                </h:panelGrid>
+                            </f:facet>
+                        </p:dialog>
+
+                    </div>
+                </div>
+            </div>
+
+        </h:form>
+
+    </ui:define>
+</ui:composition>
