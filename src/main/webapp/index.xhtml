@@ -17,79 +17,67 @@
                         <div class="subtitulo" style="margin-left: 20px; font-size: 20px">Selecione a chave</div>
 
                         <p:messages globalOnly="true" closable="true"/>
-                        <div class="p-grid ui-fluid form-group" style="margin-top: 20px">
+                        <div class="p-grid ui-fluid form-group">
 
-                            <div class="p-col-12">
-                                <p:dataTable id="id-tbl-chave" var="chave_var" value="#{indexMB.chaves}"
-                                             showGridlines="true" 
-                                             reflow="true" 
-                                             rowKey="#{chave_var.id}" 
-                                             paginator="true"
-                                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                             currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registros"
-                                             rows="10" 
-                                             emptyMessage=" "
-                                             paginatorPosition="bottom">
+                            <div class="p-col-5 p-md-5 p-col-12">
+                                <p:message for="idCategoria" showSummary="true" showDetail="false" style="width: 100%; margin-bottom: 10px;"/>
+                                <h:outputText value="Categoria" style="font-weight: bold"/>
+                                <p:selectOneMenu id="idCategoria" value="#{indexMB.idCategoria}" style="margin-top: 10px" valueChangeListener="#{indexMB.pesquisarChavesDaCategoria}" required="true" requiredMessage="Campo obrigatório!">
+                                    <f:selectItem itemLabel="Selecione a categoria:" noSelectionOption="true" />
+                                    <f:selectItems value="#{indexMB.categorias}" var="categorias_var" itemLabel="#{categorias_var.nome}" itemValue="#{categorias_var.id}" />
+                                    <p:ajax update="idChave" />
+                                </p:selectOneMenu>
+                            </div>
 
-                                    <p:column headerText="Categoria" sortBy="#{chave_var.categoria.nome}" filterBy="#{chave_var.categoria.nome}">
-                                        <h:outputText value="#{chave_var.categoria.nome}" />
-                                    </p:column>
-                                    <p:column headerText="Número" sortBy="#{chave_var.numero}" filterBy="#{chave_var.numero}" style="width: 100px">
-                                        <h:outputText value="#{chave_var.numero}" />
-                                    </p:column>
-                                    <p:column headerText="Sala" sortBy="#{chave_var.sala}" filterBy="#{chave_var.sala}">
-                                        <h:outputText value="#{chave_var.sala}" />
-                                    </p:column>
+                            <div class="p-col-5 p-md-5 p-col-12">
+                                <p:message for="idChave" showSummary="true" showDetail="false" style="width: 100%; margin-bottom: 10px;"/>
+                                <h:outputText value="Chave" style="font-weight: bold"/>
+                                <p:selectOneMenu id="idChave" value="#{indexMB.chave}" filter="true" filterMatchMode="contains" style="margin-top: 10px" converter="entityConverter" required="true" requiredMessage="Campo obrigatório!">
+                                    <f:selectItem itemLabel="Selecione a chave:" noSelectionOption="true" />
+                                    <f:selectItems value="#{indexMB.chaves}" var="chave_var" itemLabel="#{chave_var.numero} - #{chave_var.sala}" itemValue="#{categorias_var}" />
+                                </p:selectOneMenu>
+                            </div>
 
-                                    <p:column headerText="Ação" style="width: 100px;">
-                                        <p:commandButton value="Chave" action="#{indexMB.irParaItinerario()}" ajax="false" icon="pi pi-key"  style="max-width: 100px;">
-                                            <f:setPropertyActionListener value="#{chave_var}" target="#{indexMB.chave}" />
-                                        </p:commandButton>
-                                    </p:column>
-                                </p:dataTable>
+                            <div class="p-col-2 p-md-2 p-col-12">
+                                <p:commandButton value="Selecionar chave" action="#{indexMB.selecionarChave()}" ajax="false" icon="pi pi-check" style="margin-top: 70px"/>
                             </div>
                         </div>
-
                     </div>
 
-                    <div class="card card-w-title" style="margin-top: 40px">
-                        <div class="subtitulo" style="margin-left: 20px; font-size: 20px">Últimos registros</div>
+                    <h:panelGroup rendered="#{indexMB.exibirChaveSelecionada}">
+                        <div class="card card-w-title">
+                            <div class="subtitulo" style="margin-left: 20px; font-size: 20px">CHAVE: #{indexMB.chave.numero} - #{indexMB.chave.sala}</div>
+                            <div class="p-grid ui-fluid form-group">
+                                <div class="p-col-8 p-md-8 p-col-12">
+                                    <h:panelGroup rendered="#{indexMB.itinerario.id == null}" >
+                                        <p:message for="idServidorRetirada" showSummary="true" showDetail="false" style="width: 100%; margin-bottom: 10px;"/>
+                                        <span class="ui-float-label">
+                                            <p:inputText id="idServidorRetirada" value="#{indexMB.itinerario.responsavelRetiradaChave}" required="true" requiredMessage="Campo obrigatório!"/>
+                                            <label>Digite o nome do responsável pela retirada da chave</label>
+                                        </span>
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{indexMB.itinerario.id != null}" >
+                                        <p:message for="idServidorDevolucao" showSummary="true" showDetail="false" style="width: 100%; margin-bottom: 10px;"/>
+                                        <span class="ui-float-label">
+                                            <p:inputText id="idServidorDevolucao" value="#{indexMB.itinerario.responsavelDevolucaoChave}" required="true" requiredMessage="Campo obrigatório!"/>
+                                            <label>Digite o nome do responsável pela devolução da chave</label>
+                                        </span>
+                                    </h:panelGroup>
+                                </div>
 
-                        <div class="p-col-12" style="margin-top: 20px">
-                            <p:dataTable var="itinerario_var" value="#{indexMB.ultimosRegistros}"
-                                         showGridlines="true" 
-                                         reflow="true" 
-                                         rowKey="#{itinerario_var.id}">
-                                <p:column headerText="Chave">
-                                    <h:outputText value="#{itinerario_var.chave.categoria.nome}-#{itinerario_var.chave.numero}" />
-                                </p:column>
-                                <p:column headerText="Sala">
-                                    <h:outputText value="#{itinerario_var.chave.sala}" />
-                                </p:column>
-                                <p:column headerText="Responsável pela retirada">
-                                    <h:outputText value="#{itinerario_var.responsavelRetiradaChave}" />
-                                </p:column>
-                                <p:column headerText="Retirada">
-                                    <h:outputText value="#{itinerario_var.dataRetiradaDaChave}">
-                                        <f:convertDateTime type="localDateTime" pattern="dd/MM/yyyy hh:mm:ss"/>
-                                    </h:outputText>
-                                </p:column>
-                                <p:column headerText="Responsável pela devolução">
-                                    <h:outputText value="#{itinerario_var.responsavelDevolucaoChave}" />
-                                </p:column>
-                                <p:column headerText="Devolução">
-                                    <h:outputText value="#{itinerario_var.dataDevolucaoDaChave}">
-                                        <f:convertDateTime type="localDateTime" pattern="dd/MM/yyyy hh:mm:ss"/>
-                                    </h:outputText>
-                                </p:column>
+                                <div class="p-col-4 p-md-4 p-col-12" style="margin-top: 40px">
+                                    <p:commandButton value="Retirar chave" styleClass="ui-button-success" action="#{indexMB.movimentarChave()}" rendered="#{indexMB.itinerario.id == null}" ajax="false" icon="pi pi-arrow-right"/>
+                                    <p:commandButton value="Devolver chave" styleClass="ui-button-warning" action="#{indexMB.movimentarChave()}" rendered="#{indexMB.itinerario.id != null}" ajax="false" icon="pi pi-arrow-left"/>
+                                </div>
 
-                            </p:dataTable>
-                        </div>
-                    </div>
+                                <div class="p-lg-col-4 p-md-4 p-col-12 p-lg-offset-8 p-md-offset-8" style="margin-top: 40px;">
+                                    <p:commandButton value="Cancelar" action="#{indexMB.voltar()}" immediate="true" ajax="false" icon="pi pi-arrow-left"/>
+                                </div>
+                            </div>
+                        </div>    
+                    </h:panelGroup> 
                 </div>
             </div>
-
         </h:form>
-
     </ui:define>
 </ui:composition>

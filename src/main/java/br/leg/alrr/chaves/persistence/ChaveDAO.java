@@ -1,5 +1,6 @@
 package br.leg.alrr.chaves.persistence;
 
+import br.leg.alrr.chaves.model.CategoriaChave;
 import br.leg.alrr.common.util.DAOException;
 import br.leg.alrr.chaves.model.Chave;
 import java.util.List;
@@ -52,6 +53,16 @@ public class ChaveDAO {
     public List listarChavesDeCatagoriasAtivas() throws DAOException {
         try {
             return em.createQuery("select o from Chave o where o.categoria.status = true order by o.categoria.nome, o.numero")
+                    .getResultList();
+        } catch (Exception e) {
+            throw new DAOException("Erro ao listar usuários.", e);
+        }
+    }
+    
+    public List listarChavesAtivasPorCategoria(CategoriaChave categoriaChave) throws DAOException {
+        try {
+            return em.createQuery("select o from Chave o where o.status = true and o.categoria.id = :idCategoria order by o.numero, o.categoria.nome")
+                    .setParameter("idCategoria", categoriaChave.getId())
                     .getResultList();
         } catch (Exception e) {
             throw new DAOException("Erro ao listar usuários.", e);

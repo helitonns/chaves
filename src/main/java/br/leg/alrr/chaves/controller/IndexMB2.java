@@ -1,10 +1,8 @@
 package br.leg.alrr.chaves.controller;
 
-import br.leg.alrr.chaves.model.CategoriaChave;
 import br.leg.alrr.common.util.FacesUtils;
 import br.leg.alrr.chaves.model.Chave;
 import br.leg.alrr.chaves.model.Itinerario;
-import br.leg.alrr.chaves.persistence.CategoriaChaveDAO;
 import br.leg.alrr.chaves.persistence.ChaveDAO;
 import br.leg.alrr.chaves.persistence.ItinerarioDAO;
 import java.io.Serializable;
@@ -13,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.faces.event.ValueChangeEvent;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import lombok.Getter;
@@ -25,38 +22,50 @@ import lombok.Setter;
  */
 @Named
 @ViewScoped
-public class IndexMB implements Serializable {
+public class IndexMB2 implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @EJB
-    private CategoriaChaveDAO categoriaChaveDAO;
-    @EJB
     private ChaveDAO chaveDAO;
+
     @EJB
     private ItinerarioDAO itinerarioDAO;
 
     @Getter
     private List<Chave> chaves;
+
     @Getter
-    private List<CategoriaChave> categorias;
+    private List<Itinerario> ultimosRegistros;
 
     @Getter
     @Setter
     private Chave chave;
+
     @Getter
     @Setter
     private Itinerario itinerario;
-    @Getter
-    @Setter
-    private Long idCategoria;
-    @Getter
-    @Setter
-    private boolean exibirChaveSelecionada;
 
     //==========================================================================
     public String voltar() {
         return "index.xhtml" + "?faces-redirect=true";
+    }
+
+    public String irParaItinerario() {
+        try {
+            FacesUtils.setBean("chave", chave);
+
+            itinerario = itinerarioDAO.buscarItinararioAtivoPorChave(chave);
+
+            if (itinerario == null) {
+                itinerario = new Itinerario();
+            }
+
+            FacesUtils.setBean("itinerario", itinerario);
+        } catch (Exception e) {
+            System.out.println(e.getCause().toString());
+        }
+        return "itinerario.xhtml" + "?faces-redirect=true";
     }
 
     public String movimentarChave() {
@@ -79,57 +88,53 @@ public class IndexMB implements Serializable {
         }
         return "index.xhtml" + "?faces-redirect=true";
     }
-
-    public void pesquisarChavesDaCategoria(ValueChangeEvent event) {
-        try {
-            idCategoria = Long.parseLong(event.getNewValue().toString());
-            listarChaves();
-        } catch (NumberFormatException e) {
-            FacesUtils.addInfoMessage(e.getMessage());
-        }
-    }
-
-    public void selecionarChave() {
-        buscarItinerarioPorChave();
-        exibirChaveSelecionada = true;
-    }
-
     //==========================================================================
+
     //==========================================================================
     @PostConstruct
     private void iniciar() {
-        listarCategoriasChavesAtivas();
         chaves = new ArrayList<>();
-        itinerario = new Itinerario();
-        exibirChaveSelecionada = false;
+
+        if (!FacesUtils.getURL().contains("itinerario")) {
+            listarChaves();
+            listarUltimosRegistros();
+        }
+
+        try {
+            Chave c = (Chave) FacesUtils.getBean("chave");
+            if (c != null) {
+                chave = c;
+                FacesUtils.removeBean("chave");
+            } else {
+                chave = new Chave();
+            }
+
+            Itinerario i = (Itinerario) FacesUtils.getBean("itinerario");
+            if (i != null) {
+                itinerario = i;
+                FacesUtils.removeBean("itinerario");
+            } else {
+                itinerario = new Itinerario();
+            }
+        } catch (Exception e) {
+        }
     }
 
     private void listarChaves() {
         try {
-            chaves = chaveDAO.listarChavesAtivasPorCategoria(new CategoriaChave(idCategoria));
+            chaves = chaveDAO.listarChavesDeCatagoriasAtivas();
         } catch (Exception e) {
             System.out.println(e.getCause().toString());
             FacesUtils.addErrorMessageFlashScoped("Erro ao listar chaves!");
         }
     }
 
-    private void listarCategoriasChavesAtivas() {
+    private void listarUltimosRegistros() {
         try {
-            categorias = categoriaChaveDAO.listarTodasAtivas();
+            ultimosRegistros = itinerarioDAO.listarOsUltimosRegistros(10);
         } catch (Exception e) {
             System.out.println(e.getCause().toString());
-            FacesUtils.addErrorMessageFlashScoped("Erro ao listar categorias chaves!");
-        }
-    }
-
-    private void buscarItinerarioPorChave() {
-        try {
-            itinerario = itinerarioDAO.buscarItinararioAtivoPorChave(chave);
-            if (itinerario == null) {
-                itinerario = new Itinerario();
-            }
-        } catch (Exception e) {
-            System.out.println(e.getCause().toString());
+            FacesUtils.addErrorMessageFlashScoped("Erro ao listar últimos registros!");
         }
     }
     //==========================================================================
