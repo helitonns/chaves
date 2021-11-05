@@ -1,2 +1,10 @@
 /target/
 /.settings2
+/.idea
+/.settings
+.project
+.tern-project
+chaves.iml
+faces-config.NavData
+nb-configuration.xml
+nbactions.xml

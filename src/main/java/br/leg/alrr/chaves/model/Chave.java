@@ -33,5 +33,6 @@ public class Chave implements Serializable, BaseEntity{
    
    private int numero;
    private String sala;
+   private boolean status;
     
 }
