@@ -93,6 +93,7 @@ public class ChaveMB implements Serializable {
     private void iniciar() {
         chaves = new ArrayList<>();
         chave = new Chave();
+        chave.setStatus(true);
         removerChave = false;
         listarTodos();
         listarCategoriasChavesAtivas();

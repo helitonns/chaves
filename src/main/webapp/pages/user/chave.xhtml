@@ -20,26 +20,30 @@
 
                         <div class="p-grid ui-fluid form-group" style="margin-top: 10px">
 
-                            <div class="p-col-4 p-md-4 p-col-12">
+                            <div class="p-col-3 p-md-3 p-col-12">
                                 <p:message for="idCategoria" showSummary="true" showDetail="false" style="width: 100%; margin-bottom: 10px;"/>
                                 <p:selectOneMenu id="idCategoria" value="#{chaveMB.categoriaChave}" converter="entityConverter" required="true" requiredMessage="Campo obrigatório!">
                                     <f:selectItem itemLabel="Selecione a categoria:" noSelectionOption="true" />
                                     <f:selectItems value="#{chaveMB.categorias}" var="categorias_var" itemLabel="#{categorias_var.nome}" itemValue="#{categorias_var}" />
                                 </p:selectOneMenu>
                             </div>
-                            <div class="p-col-4 p-md-4 p-col-12">
+                            <div class="p-col-3 p-md-3 p-col-12">
                                 <p:message for="idNumero" showSummary="true" showDetail="false" style="width: 100%; margin-bottom: 10px;"/>
                                 <span class="ui-float-label">
                                     <p:inputText id="idNumero" value="#{chaveMB.chave.numero}"  required="true" requiredMessage="Campo obrigatório!"/>
                                     <label>Digite o número da chave</label>
                                 </span>
                             </div>
-                            <div class="p-col-4 p-md-4 p-col-12">
+                            <div class="p-col-3 p-md-3 p-col-12">
                                 <p:message for="idSala" showSummary="true" showDetail="false" style="width: 100%; margin-bottom: 10px;"/>
                                 <span class="ui-float-label">
                                     <p:inputText id="idSala" value="#{chaveMB.chave.sala}" converter="upper" required="true" requiredMessage="Campo obrigatório!"/>
                                     <label>Digite a sala da chave</label>
                                 </span>
+                            </div>
+                            <div class="p-col-3 p-md-3 p-col-12">
+                                <p:message for="idStatus" showSummary="true" showDetail="false" style="width: 100%; margin-bottom: 10px;"/>
+                                <p:selectBooleanButton id="idStatus" value="#{chaveMB.chave.status}" onLabel="Ativa" offLabel="Inativa" onIcon="pi pi-check" offIcon="pi pi-times" style="width: 100%;"  />
                             </div>
 
                             <div class="p-col-6 p-md-6 p-col-12">
@@ -84,6 +88,11 @@
                                     </p:column>
                                     <p:column headerText="Sala" sortBy="#{chave_var.sala}" >
                                         <h:outputText value="#{chave_var.sala}" />
+                                    </p:column>
+                                    
+                                    <p:column headerText="Status" >
+                                        <h:outputText value="Ativa" rendered="#{chave_var.status}" />
+                                        <h:outputText value="Inativa" rendered="#{!chave_var.status}" />
                                     </p:column>
 
                                     <p:column headerText="Ação" style="max-width: 200px;">
